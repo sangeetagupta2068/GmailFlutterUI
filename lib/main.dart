@@ -27,69 +27,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class MyHomePageState extends State<MyHomePage> {
-  Widget _mailListViewGenerator() {
-    return ListView.builder(
-        itemCount: MailGenerator.mailListLength,
-        itemBuilder: (context, position) {
-          MailContent mailContent = MailGenerator.getMailContent(position);
-          return Column(children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(
-                  left: 14.0, right: 14.0, top: 5.0, bottom: 5.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Icon(Icons.account_circle, size: 55.0),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 10.0),
-                      child: Column(
-                        children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text(
-                                mailContent.sender,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.black87,
-                                    fontSize: 17.0),
-                              ),
-                              Text(
-                                mailContent.time,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.black54,
-                                    fontSize: 13.5),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text(
-                                mailContent.message,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.black54,
-                                    fontSize: 15.5),
-                              ),
-                              Icon(Icons.star_border, size: 25.0),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Divider(),
-          ]);
-        });
-  }
-
   var drawerIcons = [
     Icon(Icons.move_to_inbox),
     Icon(Icons.inbox),
@@ -132,86 +69,175 @@ class MyHomePageState extends State<MyHomePage> {
 
   var titleBarContent = "Primary";
 
-  Text email = new Text(
-    "tinnigupta1998@gmail.com",
-    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15.0),
-  );
-  Text name = new Text(
-    "Tinni Gupta",
-    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15.0),
-  );
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.red,
-        title: new Text(
-          titleBarContent,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20.0,
-            fontWeight: FontWeight.w400,
+      appBar: _getMailAppBar(),
+      drawer: _getMailAccountDrawerr(),
+      body: _mailListViewGenerator(),
+      floatingActionButton: _getMailFloatingActionButton(),
+    );
+  }
+
+  FloatingActionButton _getMailFloatingActionButton() {
+    return FloatingActionButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ComposeEmailPageState()),
+        );
+      },
+      child: Icon(Icons.edit),
+      backgroundColor: Colors.red,
+    );
+  }
+
+  AppBar _getMailAppBar() {
+    return AppBar(
+      backgroundColor: Colors.red,
+      title: new Text(
+        titleBarContent,
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 20.0,
+          fontWeight: FontWeight.w400,
+        ),
+      ),
+      actions: <Widget>[
+        Padding(
+          padding: const EdgeInsets.only(right: 13.0),
+          child: Icon(
+            Icons.search,
+            size: 25.0,
           ),
         ),
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(right: 13.0),
-            child: Icon(
-              Icons.search,
-              size: 25.0,
-            ),
+      ],
+    );
+  }
+
+  Drawer _getMailAccountDrawerr() {
+    Text email = new Text(
+      "tinnigupta1998@gmail.com",
+      style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15.0),
+    );
+
+    Text name = new Text(
+      "Tinni Gupta",
+      style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15.0),
+    );
+
+    return Drawer(
+        child: Column(
+      children: <Widget>[
+        UserAccountsDrawerHeader(
+          decoration: BoxDecoration(color: Colors.red),
+          accountName: name,
+          accountEmail: email,
+          currentAccountPicture: Icon(
+            Icons.account_circle,
+            size: 50.0,
+            color: Colors.white,
           ),
-        ],
-      ),
-      drawer: Drawer(
-          child: Column(
-        children: <Widget>[
-          Expanded(
-            flex: 1,
-            child: UserAccountsDrawerHeader(
-              decoration: BoxDecoration(color: Colors.red),
-              accountName: name,
-              accountEmail: email,
-              currentAccountPicture: Icon(
-                Icons.account_circle,
-                size: 50.0,
-                color: Colors.white,
+        ),
+        Expanded(
+          flex: 2,
+          child: ListView.builder(
+              itemCount: drawerText.length,
+              itemBuilder: (context, position) {
+                return ListTile(
+                  leading: drawerIcons[position],
+                  title: Text(drawerText[position],
+                      style: TextStyle(fontSize: 15.0)),
+                  onTap: () {
+                    this.setState(() {
+                      titleBarContent = drawerText[position];
+                    });
+                    Navigator.pop(context);
+                  },
+                );
+              }),
+        )
+      ],
+    ));
+  }
+
+  Widget _mailListViewGenerator() {
+    return ListView.builder(
+        itemCount: MailGenerator.mailListLength,
+        itemBuilder: (context, position) {
+          MailContent mailContent = MailGenerator.getMailContent(position);
+          return Column(children: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(
+                  left: 14.0, right: 14.0, top: 5.0, bottom: 5.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Icon(
+                    Icons.account_circle,
+                    size: 55.0,
+                    color: Colors.red,
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 10.0),
+                      child: Column(
+                        children: <Widget>[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(
+                                mailContent.sender,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.black87,
+                                    fontSize: 17.0),
+                              ),
+                              Text(
+                                mailContent.time,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.black54,
+                                    fontSize: 13.5),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                    mailContent.subject,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.black54,
+                                        fontSize: 15.5),
+                                  ),
+                                  Text(
+                                    mailContent.message,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.black54,
+                                        fontSize: 15.5),
+                                  )
+                                ],
+                              ),
+                              Icon(Icons.star_border, size: 25.0),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
-          Expanded(
-            flex: 2,
-            child: ListView.builder(
-                itemCount: drawerText.length,
-                itemBuilder: (context, position) {
-                  return ListTile(
-                    leading: drawerIcons[position],
-                    title: Text(drawerText[position],
-                        style: TextStyle(fontSize: 15.0)),
-                    onTap: () {
-                      this.setState(() {
-                        titleBarContent = drawerText[position];
-                      });
-                      Navigator.pop(context);
-                    },
-                  );
-                }),
-          )
-        ],
-      )),
-      body: _mailListViewGenerator(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ComposeEmailPageState()),
-          );
-        },
-        child: Icon(Icons.edit),
-        backgroundColor: Colors.red,
-      ),
-    );
+            Divider(),
+          ]);
+        });
   }
 }
 

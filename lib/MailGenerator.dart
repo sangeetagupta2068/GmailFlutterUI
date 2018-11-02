@@ -20,8 +20,6 @@ class MailGenerator {
         "This is a simple demo mail..."),
     MailContent("Happy Halloween", "John Doe", "31 Oct",
         "This is a simple demo mail..."),
-    MailContent("Happy Halloween", "John Doe", "31 Oct",
-        "This is a simple demo mail..."),
   ];
 
   static MailContent getMailContent(int position) => mailList[position];
