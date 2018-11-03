@@ -142,6 +142,7 @@ class MyHomePageState extends State<MyHomePage> {
         Expanded(
           flex: 2,
           child: ListView.builder(
+              padding: EdgeInsets.only(top:0.0),
               itemCount: drawerText.length,
               itemBuilder: (context, position) {
                 return ListTile(
